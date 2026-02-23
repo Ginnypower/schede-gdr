@@ -36,9 +36,14 @@ export default function Home() {
     else if (data) setSchede(data);
   }
 
-  const handleSalva = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const supabase = getSupabase();
+  
+    const handleSalva = async (e: React.FormEvent) => {
+      e.preventDefault();
+      // AGGIUNGI QUESTA RIGA:
+      console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL ? "Trovato" : "NON TROVATO");
+      
+      const supabase = getSupabase();
+      // ... resto del codice
     
     if (!supabase) {
       alert("Errore di configurazione: Controlla le chiavi su Vercel!");
