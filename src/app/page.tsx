@@ -25,6 +25,11 @@ export default function Home() {
   const [descrizione, setDescrizione] = useState('');
   const [manuale, setManuale] = useState('');
 
+  const [filtroMaster, setFiltroMaster] = useState('');
+  const [filtroTitolo, setFiltroTitolo] = useState('');
+
+  
+
   useEffect(() => {
     fetchSchede();
   }, []);
@@ -89,6 +94,12 @@ export default function Home() {
     }
   };
 
+  const schedeFiltrate = schede.filter(scheda => {
+    const matchMaster = scheda.master.toLowerCase().includes(filtroMaster.toLowerCase());
+    const matchTitolo = scheda.titolo.toLowerCase().includes(filtroTitolo.toLowerCase());
+    return matchMaster && matchTitolo;
+  });
+
   return (
     <div className="flex min-h-screen bg-gray-50 font-sans text-gray-900 relative">
       <aside className="w-64 bg-white border-r border-gray-200 p-6 hidden md:flex flex-col">
@@ -109,9 +120,32 @@ export default function Home() {
             + Nuova Scheda
           </button>
         </div>
-
+{/* SEZIONE FILTRI */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+          <div className="flex flex-col">
+            <label className="text-xs font-bold text-blue-600 uppercase mb-1 ml-1">Cerca Campagna</label>
+            <input 
+              type="text"
+              placeholder="Filtra per titolo..."
+              className="p-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+              value={filtroTitolo}
+              onChange={(e) => setFiltroTitolo(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="text-xs font-bold text-blue-600 uppercase mb-1 ml-1">Filtra per Master</label>
+            <input 
+              type="text"
+              placeholder="Filtra per nome master..."
+              className="p-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+              value={filtroMaster}
+              onChange={(e) => setFiltroMaster(e.target.value)}
+            />
+          </div>
+        </div>
+        
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {schede.map((scheda) => (
+          {schedeFiltrate.map((scheda) => (
             <div key={scheda.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group">
               <button 
                 onClick={() => handleElimina(scheda.id)}
