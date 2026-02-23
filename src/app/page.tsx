@@ -25,11 +25,14 @@ export default function Home() {
   }, []);
 
   async function fetchSchede() {
+    // Se siamo su Vercel in fase di build, le chiavi potrebbero essere vuote
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return;
+  
     const { data, error } = await supabase
       .from('schede_idea')
       .select('*')
-      .order('id', { ascending: false });
-
+      .order('created_at', { ascending: false });
+  
     if (error) console.error('Errore fetch:', error.message);
     else if (data) setSchede(data);
   }
