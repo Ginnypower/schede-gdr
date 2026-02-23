@@ -1,10 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+// Leggiamo le variabili
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-// Non lanciamo più l'errore qui, lo gestiremo silenziosamente
+// Se mancano (ad esempio durante il build di Vercel), usiamo stringhe vuote temporanee
+// ma se siamo nel browser "vero", devono esserci!
 export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co', 
-  supabaseAnonKey || 'placeholder'
+  supabaseUrl || '', 
+  supabaseAnonKey || ''
 );
