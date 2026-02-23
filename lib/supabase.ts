@@ -1,14 +1,15 @@
 import { createClient } from '@supabase/supabase-js';
 
 export const getSupabase = () => {
-  // Cambiamo i nomi delle variabili per forzare Vercel a cercarne di nuove
-  const url = process.env.NEXT_PUBLIC_URL_DB;
-  const key = process.env.NEXT_PUBLIC_KEY_DB;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!url || !key) {
-    console.error("Mancano le variabili: ", { url: !!url, key: !!key });
+  // Se mancano le chiavi (fase di build), restituiamo null senza lanciare errori
+  if (!supabaseUrl || !supabaseAnonKey) {
     return null;
   }
 
-  return createClient(url, key);
+  return createClient(supabaseUrl, supabaseAnonKey);
 };
+
+export const supabase = getSupabase();
