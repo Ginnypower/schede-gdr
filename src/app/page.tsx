@@ -56,7 +56,7 @@ export default function Home() {
       .select();
 
     if (error) {
-      alert("Errore nel salvataggio: " + error.message);
+      alert(`Errore Tecnico: ${error.message} (Codice: ${error.code})`);
     } else if (data) {
       setSchede([data[0], ...schede]);
       setTitolo(''); setMaster(''); setDescrizione(''); setManuale('');
