@@ -27,7 +27,7 @@ export default function Home() {
 
   const [filtroMaster, setFiltroMaster] = useState('');
   const [filtroTitolo, setFiltroTitolo] = useState('');
-
+  const [filtroManuale, setFiltroManuale] = useState('');
   
 
   useEffect(() => {
@@ -95,9 +95,11 @@ export default function Home() {
   };
 
   const schedeFiltrate = schede.filter(scheda => {
-    const matchMaster = scheda.master.toLowerCase().includes(filtroMaster.toLowerCase());
-    const matchTitolo = scheda.titolo.toLowerCase().includes(filtroTitolo.toLowerCase());
-    return matchMaster && matchTitolo;
+    const matchMaster = (scheda.master || "").toLowerCase().includes(filtroMaster.toLowerCase());
+    const matchTitolo = (scheda.titolo || "").toLowerCase().includes(filtroTitolo.toLowerCase());
+    const matchManuale = (scheda.manuale || "").toLowerCase().includes(filtroManuale.toLowerCase()); // Nuovo controllo
+    
+    return matchMaster && matchTitolo && matchManuale; // Devono essere tutti veri
   });
 
   return (
@@ -121,29 +123,40 @@ export default function Home() {
           </button>
         </div>
 {/* SEZIONE FILTRI */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+{/* SEZIONE FILTRI AGGIORNATA */}
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
           <div className="flex flex-col">
             <label className="text-xs font-bold text-blue-600 uppercase mb-1 ml-1">Cerca Campagna</label>
             <input 
               type="text"
-              placeholder="Filtra per titolo..."
+              placeholder="Titolo..."
               className="p-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
               value={filtroTitolo}
               onChange={(e) => setFiltroTitolo(e.target.value)}
             />
           </div>
           <div className="flex flex-col">
-            <label className="text-xs font-bold text-blue-600 uppercase mb-1 ml-1">Filtra per Master</label>
+            <label className="text-xs font-bold text-blue-600 uppercase mb-1 ml-1">Filtra Master</label>
             <input 
               type="text"
-              placeholder="Filtra per nome master..."
+              placeholder="Nome master..."
               className="p-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
               value={filtroMaster}
               onChange={(e) => setFiltroMaster(e.target.value)}
             />
           </div>
+          <div className="flex flex-col">
+            <label className="text-xs font-bold text-blue-600 uppercase mb-1 ml-1">Filtra Manuale</label>
+            <input 
+              type="text"
+              placeholder="Es: D&D 5e, PF2..."
+              className="p-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+              value={filtroManuale}
+              onChange={(e) => setFiltroManuale(e.target.value)}
+            />
+          </div>
         </div>
-        
+
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {schedeFiltrate.map((scheda) => (
             <div key={scheda.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group">
