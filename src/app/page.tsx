@@ -3,6 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { getSupabase } from '../../lib/supabase';
 
+if (typeof window !== "undefined") {
+  console.log("DEBUG CHIAVI:");
+  console.log("URL presente?", !!process.env.NEXT_PUBLIC_SUPABASE_URL);
+  console.log("KEY presente?", !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+}
+
 interface SchedaIdea {
   id: number;
   titolo: string;
