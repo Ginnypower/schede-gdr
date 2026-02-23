@@ -25,20 +25,21 @@ export default function Home() {
   }, []);
 
   async function fetchSchede() {
-    // Se siamo su Vercel in fase di build, le chiavi potrebbero essere vuote
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return;
+    if (!supabase) return; // Fermati qui se il client non è inizializzato
   
     const { data, error } = await supabase
       .from('schede_idea')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('id', { ascending: false });
   
-    if (error) console.error('Errore fetch:', error.message);
+    if (error) console.error('Errore:', error.message);
     else if (data) setSchede(data);
   }
-
+  
+  // Fai la stessa cosa all'inizio di handleSalva e handleElimina
   const handleSalva = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!supabase) return; 
     
     // Proviamo a inserire i dati
     const { data, error } = await supabase
