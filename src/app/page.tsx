@@ -31,6 +31,8 @@ export default function Home() {
   const [filtroTitolo, setFiltroTitolo] = useState('');
   const [filtroManuale, setFiltroManuale] = useState('');
   
+  const [schedaEspansa, setSchedaEspansa] = useState<SchedaIdea | null>(null);
+  const LIMITE_CARATTERI = 450;
 
   useEffect(() => {
     fetchSchede();
@@ -211,7 +213,9 @@ export default function Home() {
             
             
               
-              <div key={scheda.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group hover:border-blue-300 transition-colors">
+              <div key={scheda.id} 
+              onClick={() => setSchedaEspansa(scheda)} // <--- Apre il dettaglio al click
+              className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group hover:border-blue-300 transition-all cursor-pointer hover:shadow-md">
               <button 
                 onClick={() => handleElimina(scheda.id)}
                 className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
@@ -220,7 +224,14 @@ export default function Home() {
               </button>
               <h3 className="text-2xl font-bold mb-1 pr-8">{scheda.titolo}</h3>
               <p className="text-sm text-blue-600 font-medium mb-3 italic">Master: {scheda.master}</p>
-              <p className="text-gray-700 mb-6">{scheda.descrizione}</p>
+              <p className="text-gray-700 mb-6">
+    {scheda.descrizione.length > LIMITE_CARATTERI 
+      ? scheda.descrizione.substring(0, LIMITE_CARATTERI) + "..." 
+      : scheda.descrizione}
+    {scheda.descrizione.length > LIMITE_CARATTERI && (
+      <span className="text-blue-500 font-bold ml-2">Leggi tutto →</span>
+    )}
+  </p>
               <div className="text-xs font-mono bg-gray-100 p-2 rounded border border-gray-200 mb-4">
                 📚 Manuale: {scheda.manuale}
               </div>
@@ -241,6 +252,38 @@ export default function Home() {
           ))}
         </div>
       </main>
+
+{/* MODAL DETTAGLIO COMPLETO */}
+{schedaEspansa && (
+  <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[60] backdrop-blur-sm">
+    <div className="bg-white rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
+      <button 
+        onClick={() => setSchedaEspansa(null)}
+        className="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"
+      >
+        ✕
+      </button>
+      
+      <h2 className="text-3xl font-black mb-2 text-gray-900">{schedaEspansa.titolo}</h2>
+      <p className="text-blue-600 font-bold italic mb-6">Master: {schedaEspansa.master} | Manuale: {schedaEspansa.manuale}</p>
+      
+      <div className="prose prose-blue max-w-none">
+        <p className="text-gray-800 leading-relaxed whitespace-pre-wrap text-lg">
+          {schedaEspansa.descrizione}
+        </p>
+      </div>
+
+      <div className="mt-8 pt-6 border-t border-gray-100">
+        <button 
+          onClick={() => setSchedaEspansa(null)}
+          className="w-full py-3 bg-gray-100 hover:bg-gray-200 rounded-xl font-bold transition-colors"
+        >
+          Chiudi Dettaglio
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {isFormOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
