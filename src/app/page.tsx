@@ -42,6 +42,17 @@ export default function Home() {
     fetchSchede();
   }, []);
 
+  const resetForm = () => {
+    setTitolo('');
+    setMaster('');
+    setDescrizione('');
+    setManuale('');
+    setFileImmagine(null);
+
+    
+    // Aggiungi qui tutti gli stati che usi nel form
+  };
+
   async function fetchSchede() {
     const supabase = getSupabase();
     if (!supabase) return;
@@ -109,7 +120,14 @@ export default function Home() {
     if (error) {
       console.error("ERRORE DATABASE:", error.code, error.message, error.details);
       alert(`Errore ${error.code}: ${error.message}`);
+    } else {
+      // --- LE TRE RIGHE CHE RISOLVONO TUTTO ---
+      setIsFormOpen(false); // 1. Chiude il modal
+      resetForm();          // 2. Opzionale: pulisce i campi (titolo, desc, etc.)
+      fetchSchede();        // 3. Ricarica la lista per vedere la nuova idea
+      // ----------------------------------------
     }
+    
     setCaricando(false);
   }
 
@@ -351,8 +369,10 @@ export default function Home() {
               <input required placeholder="Titolo" value={titolo} onChange={e => setTitolo(e.target.value)} className="w-full p-2 border rounded-md" />
               <input required placeholder="Master" value={master} onChange={e => setMaster(e.target.value)} className="w-full p-2 border rounded-md" />
               <textarea required placeholder="Descrizione" value={descrizione} onChange={e => setDescrizione(e.target.value)} className="w-full p-2 border rounded-md" rows={3} />
-              <input required placeholder="Manuale" value={manuale} onChange={e => setManuale(e.target.value)} className="w-full p-3 border rounded-xl bg-white dark:bg-gray-800 dark:text-white min-h-[200px] resize-y" />
+              <input required placeholder="Manuale" value={manuale} onChange={e => setManuale(e.target.value)} className="w-full p-3 border rounded-xl  resize-y" />
               <div className="flex flex-col gap-1">
+{/*bg-white dark:bg-gray-800 dark:text-white ? codice per fare la colorazione nera*/}
+
   <label className="text-xs font-bold text-gray-500 uppercase">Immagine Copertina</label>
   <input 
     type="file" 
