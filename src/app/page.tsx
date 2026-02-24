@@ -166,10 +166,10 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-gray-50 font-sans text-gray-900 relative">
-      <aside className="w-64 bg-white border-r border-gray-200 p-6 hidden md:flex flex-col">
+    <aside className="bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 ...">
   <h2 className="text-xl font-bold mb-4 text-blue-800">Statistiche</h2>
-  <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 text-center mb-6">
-    <p className="text-sm text-gray-600 uppercase">Idee Totali</p>
+  <div className="bg-blue-50 dark:bg-blue-900/20 ...">
+  <p className="text-blue-600 dark:text-blue-400 font-black">Idee totali</p>
     <p className="text-4xl font-black text-blue-600">{schedeFiltrate.length}</p>
   </div>
   
@@ -183,6 +183,8 @@ export default function Home() {
 </aside>
 
 <main className="flex-1 p-8 overflow-y-auto">
+// Esempio sul contenitore principale
+<div className="min-h-screen bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300">
   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
     <div>
       <h1 className="text-3xl font-extrabold text-gray-800">Le mie Idee GDR</h1>
@@ -208,6 +210,7 @@ export default function Home() {
       </button>
     </div>
   </div>
+  </div>
 {/* SEZIONE FILTRI */}
 {/* SEZIONE FILTRI AGGIORNATA */}
 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
@@ -216,7 +219,7 @@ export default function Home() {
             <input 
               type="text"
               placeholder="Titolo..."
-              className="p-2 bg-gray-50 border border-gray-200 rounded-lg outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+              className="bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white ..."
               value={filtroTitolo}
               onChange={(e) => setFiltroTitolo(e.target.value)}
             />
@@ -250,7 +253,7 @@ export default function Home() {
               
               <div key={scheda.id} 
               onClick={() => setSchedaEspansa(scheda)} // <--- Apre il dettaglio al click
-              className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group hover:border-blue-300 transition-all cursor-pointer hover:shadow-md">
+               className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group hover:border-blue-300 transition-all cursor-pointer hover:shadow-md">
               <button 
   onClick={(e) => {
     e.stopPropagation(); // Blocca l'apertura del dettaglio
@@ -305,7 +308,7 @@ export default function Home() {
 {/* MODAL DETTAGLIO COMPLETO */}
 {schedaEspansa && (
   <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[60] backdrop-blur-sm">
-    <div className="bg-white rounded-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl relative">
+    <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl ...">
       <button 
         onClick={() => setSchedaEspansa(null)}
         className="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"
@@ -313,8 +316,8 @@ export default function Home() {
         ✕
       </button>
       
-      <h2 className="text-3xl font-black mb-2 text-gray-900">{schedaEspansa.titolo}</h2>
-      <p className="text-blue-600 font-bold italic mb-6">Master: {schedaEspansa.master} | Manuale: {schedaEspansa.manuale}</p>
+      <h2 className="text-gray-900 dark:text-white ...">{schedaEspansa.titolo}</h2>
+      <p className="text-gray-800 dark:text-gray-200 ...">{schedaEspansa.descrizione}</p>
       
       <div className="prose prose-blue max-w-none">
         <p className="text-gray-800 leading-relaxed whitespace-pre-wrap text-lg">
