@@ -145,16 +145,32 @@ export default function Home() {
   </a>
 </aside>
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-800">Le mie Idee GDR</h1>
-          <button 
-            onClick={() => setIsFormOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow-lg transition-transform active:scale-95"
-          >
-            + Nuova Scheda
-          </button>
-        </div>
+<main className="flex-1 p-8 overflow-y-auto">
+  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+    <div>
+      <h1 className="text-3xl font-extrabold text-gray-800">Le mie Idee GDR</h1>
+      {/* Opzionale: un piccolo contatore visibile anche da mobile */}
+      <p className="text-sm text-gray-500 md:hidden">Idee totali: {schedeFiltrate.length}</p>
+    </div>
+
+    <div className="flex gap-2 w-full sm:w-auto">
+      {/* TASTO SONDAGGIO - Giallo e visibile ovunque */}
+      <a 
+        href="/sondaggio" 
+        className="flex-1 sm:flex-none bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold py-2 px-6 rounded-full shadow-lg text-center transition-transform active:scale-95"
+      >
+        Vota 🗳️
+      </a>
+
+      {/* TASTO NUOVA SCHEDA */}
+      <button 
+        onClick={() => setIsFormOpen(true)}
+        className="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full shadow-lg transition-transform active:scale-95"
+      >
+        + Nuova
+      </button>
+    </div>
+  </div>
 {/* SEZIONE FILTRI */}
 {/* SEZIONE FILTRI AGGIORNATA */}
 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
@@ -192,7 +208,8 @@ export default function Home() {
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {schedeFiltrate.map((scheda) => (
-            <div key={scheda.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group">
+            
+            
               
               <div key={scheda.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group hover:border-blue-300 transition-colors">
               <button 
@@ -220,7 +237,7 @@ export default function Home() {
                 {scheda.in_sondaggio ? "⭐ Nel Sondaggio" : "➕ Aggiungi al Sondaggio"}
               </button>
             </div>
-            </div>
+          
           ))}
         </div>
       </main>
