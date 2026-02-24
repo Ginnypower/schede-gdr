@@ -32,7 +32,7 @@ export default function Home() {
   const [filtroManuale, setFiltroManuale] = useState('');
   
   const [schedaEspansa, setSchedaEspansa] = useState<SchedaIdea | null>(null);
-  const LIMITE_CARATTERI = 450;
+  const LIMITE_CARATTERI = 700;
 
   useEffect(() => {
     fetchSchede();
