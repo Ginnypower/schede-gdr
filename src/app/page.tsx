@@ -17,6 +17,7 @@ interface SchedaIdea {
   manuale: string;
   voti: number;
   in_sondaggio: boolean;
+  immagine?: string;
 }
 
 export default function Home() {
@@ -26,7 +27,7 @@ export default function Home() {
   const [master, setMaster] = useState('');
   const [descrizione, setDescrizione] = useState('');
   const [manuale, setManuale] = useState('');
-
+  const [immagine, setImmagine] = useState('');
   const [filtroMaster, setFiltroMaster] = useState('');
   const [filtroTitolo, setFiltroTitolo] = useState('');
   const [filtroManuale, setFiltroManuale] = useState('');
@@ -67,7 +68,7 @@ export default function Home() {
 
     const { data, error } = await supabase
       .from('schede_idea')
-      .insert([{ titolo, master, descrizione, manuale }])
+      .insert([{ titolo, master, descrizione, manuale, immagine }])
       .select();
 
     if (error) {
@@ -235,7 +236,15 @@ export default function Home() {
               <div className="text-xs font-mono bg-gray-100 p-2 rounded border border-gray-200 mb-4">
                 📚 Manuale: {scheda.manuale}
               </div>
-              
+              {scheda.immagine && (
+  <div className="w-full h-40 mb-4 overflow-hidden rounded-lg">
+    <img 
+      src={scheda.immagine} 
+      alt={scheda.titolo} 
+      className="w-full h-full object-cover transition-transform group-hover:scale-105"
+    />
+  </div>
+)}
               {/* NUOVO TASTO SONDAGGIO */}
               <button
                 onClick={() => toggleSondaggio(scheda.id, scheda.in_sondaggio)}
@@ -271,6 +280,14 @@ export default function Home() {
         <p className="text-gray-800 leading-relaxed whitespace-pre-wrap text-lg">
           {schedaEspansa.descrizione}
         </p>
+        {/* Nel modal della scheda espansa */}
+{schedaEspansa.immagine && (
+  <img 
+    src={schedaEspansa.immagine} 
+    alt={schedaEspansa.titolo} 
+    className="w-full h-64 object-cover rounded-xl mb-6 shadow-md"
+  />
+)}
       </div>
 
       <div className="mt-8 pt-6 border-t border-gray-100">
@@ -294,6 +311,12 @@ export default function Home() {
               <input required placeholder="Master" value={master} onChange={e => setMaster(e.target.value)} className="w-full p-2 border rounded-md" />
               <textarea required placeholder="Descrizione" value={descrizione} onChange={e => setDescrizione(e.target.value)} className="w-full p-2 border rounded-md" rows={3} />
               <input required placeholder="Manuale" value={manuale} onChange={e => setManuale(e.target.value)} className="w-full p-2 border rounded-md" />
+              <input 
+                placeholder="URL Immagine (opzionale)" 
+                value={immagine} 
+                onChange={e => setImmagine(e.target.value)} 
+                className="w-full p-2 border rounded-md" />
+
               <div className="flex gap-2 pt-4">
                 <button type="button" onClick={() => setIsFormOpen(false)} className="flex-1 py-2 bg-gray-200 rounded-md font-bold">Annulla</button>
                 <button type="submit" className="flex-1 py-2 bg-blue-600 text-white rounded-md font-bold hover:bg-blue-700">Salva Idea</button>
