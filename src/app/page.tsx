@@ -252,11 +252,14 @@ export default function Home() {
               onClick={() => setSchedaEspansa(scheda)} // <--- Apre il dettaglio al click
               className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group hover:border-blue-300 transition-all cursor-pointer hover:shadow-md">
               <button 
-                onClick={() => handleElimina(scheda.id)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
-              >
-                🗑️
-              </button>
+  onClick={(e) => {
+    e.stopPropagation(); // Blocca l'apertura del dettaglio
+    handleElimina(scheda.id);
+  }}
+  className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors z-10"
+>
+  🗑️
+</button>
               <h3 className="text-2xl font-bold mb-1 pr-8">{scheda.titolo}</h3>
               <p className="text-sm text-blue-600 font-medium mb-3 italic">Master: {scheda.master}</p>
               <p className="text-gray-700 mb-6">
@@ -281,15 +284,18 @@ export default function Home() {
 )}
               {/* NUOVO TASTO SONDAGGIO */}
               <button
-                onClick={() => toggleSondaggio(scheda.id, scheda.in_sondaggio)}
-                className={`w-full py-2 rounded-lg font-bold transition-all ${
-                  scheda.in_sondaggio 
-                    ? "bg-yellow-400 hover:bg-yellow-500 text-yellow-900 border border-yellow-500 shadow-inner" 
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200"
-                }`}
-              >
-                {scheda.in_sondaggio ? "⭐ Nel Sondaggio" : "➕ Aggiungi al Sondaggio"}
-              </button>
+  onClick={(e) => {
+    e.stopPropagation(); // Blocca l'apertura del dettaglio
+    toggleSondaggio(scheda.id, scheda.in_sondaggio);
+  }}
+  className={`w-full py-2 rounded-lg font-bold transition-all ${
+    scheda.in_sondaggio 
+      ? "bg-yellow-400 text-yellow-900" 
+      : "bg-gray-100 text-gray-600"
+  }`}
+>
+  {scheda.in_sondaggio ? "⭐ Nel Sondaggio" : "➕ Aggiungi al Sondaggio"}
+</button>
             </div>
           
           ))}
