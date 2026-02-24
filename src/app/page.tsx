@@ -271,11 +271,11 @@ export default function Home() {
                 📚 Manuale: {scheda.manuale}
               </div>
               {scheda.immagine && (
-  <div className="w-full h-40 mb-4 overflow-hidden rounded-lg">
+  <div className="w-full h-48 mb-4 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
     <img 
       src={scheda.immagine} 
       alt={scheda.titolo} 
-      className="w-full h-full object-cover transition-transform group-hover:scale-105"
+      className="max-w-full max-h-full object-contain transition-transform group-hover:scale-105"
     />
   </div>
 )}
@@ -315,12 +315,14 @@ export default function Home() {
           {schedaEspansa.descrizione}
         </p>
         {/* Nel modal della scheda espansa */}
-{schedaEspansa.immagine && (
-  <img 
-    src={schedaEspansa.immagine} 
-    alt={schedaEspansa.titolo} 
-    className="w-full h-64 object-cover rounded-xl mb-6 shadow-md"
-  />
+        {schedaEspansa.immagine && (
+  <div className="w-full mb-6 rounded-xl overflow-hidden bg-gray-50 flex justify-center">
+    <img 
+      src={schedaEspansa.immagine} 
+      alt={schedaEspansa.titolo} 
+      className="max-w-full h-auto max-h-[500px] object-contain shadow-md"
+    />
+  </div>
 )}
       </div>
 
