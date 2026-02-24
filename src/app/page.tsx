@@ -94,7 +94,9 @@ export default function Home() {
     const supabase = getSupabase();
     if (!supabase) return;
   
-    const { error } = await supabase.from('schede_idea').insert([{ 
+    const { data, error } = await supabase
+  .from('schede_idea')
+  .insert([{ 
       titolo, 
       master, 
       descrizione, 
@@ -104,12 +106,9 @@ export default function Home() {
       in_sondaggio: false 
     }]);
   
-    if (!error) {
-      // Reset e chiusura
-      setFileImmagine(null);
-      setIsFormOpen(false);
-      fetchSchede();
-      // Resetta gli altri stati (titolo, master, etc.)
+    if (error) {
+      console.error("ERRORE DATABASE:", error.code, error.message, error.details);
+      alert(`Errore ${error.code}: ${error.message}`);
     }
     setCaricando(false);
   }
@@ -352,7 +351,7 @@ export default function Home() {
               <input required placeholder="Titolo" value={titolo} onChange={e => setTitolo(e.target.value)} className="w-full p-2 border rounded-md" />
               <input required placeholder="Master" value={master} onChange={e => setMaster(e.target.value)} className="w-full p-2 border rounded-md" />
               <textarea required placeholder="Descrizione" value={descrizione} onChange={e => setDescrizione(e.target.value)} className="w-full p-2 border rounded-md" rows={3} />
-              <input required placeholder="Manuale" value={manuale} onChange={e => setManuale(e.target.value)} className="w-full p-2 border rounded-md" />
+              <input required placeholder="Manuale" value={manuale} onChange={e => setManuale(e.target.value)} className="w-full p-3 border rounded-xl bg-white dark:bg-gray-800 dark:text-white min-h-[200px] resize-y" />
               <div className="flex flex-col gap-1">
   <label className="text-xs font-bold text-gray-500 uppercase">Immagine Copertina</label>
   <input 
