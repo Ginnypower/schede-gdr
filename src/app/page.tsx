@@ -15,6 +15,8 @@ interface SchedaIdea {
   master: string;
   descrizione: string;
   manuale: string;
+  voti: number;
+  in_sondaggio: boolean;
 }
 
 export default function Home() {
@@ -94,6 +96,29 @@ export default function Home() {
     }
   };
 
+  async function toggleSondaggio(id: number, statoAttuale: boolean) {
+    const supabase = getSupabase();
+    if (!supabase) return;
+
+    // Invertiamo lo stato: se era false diventa true, e viceversa
+    const nuovoStato = !statoAttuale;
+
+    const { error } = await supabase
+      .from('schede_idea')
+      .update({ in_sondaggio: nuovoStato })
+      .eq('id', id);
+
+    if (error) {
+      console.error("Errore aggiornamento:", error);
+      alert("Errore nell'aggiornamento del sondaggio.");
+    } else {
+      // Aggiorniamo la lista visibile senza ricaricare la pagina
+      setSchede(schede.map(scheda => 
+        scheda.id === id ? { ...scheda, in_sondaggio: nuovoStato } : scheda
+      ));
+    }
+  }
+
   const schedeFiltrate = schede.filter(scheda => {
     const matchMaster = (scheda.master || "").toLowerCase().includes(filtroMaster.toLowerCase());
     const matchTitolo = (scheda.titolo || "").toLowerCase().includes(filtroTitolo.toLowerCase());
@@ -111,6 +136,21 @@ export default function Home() {
           <p className="text-4xl font-black text-blue-600">{schede.length}</p>
         </div>
       </aside>
+      <aside className="w-64 bg-white border-r border-gray-200 p-6 hidden md:flex flex-col">
+  <h2 className="text-xl font-bold mb-4 text-blue-800">Statistiche</h2>
+  <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 text-center mb-6">
+    <p className="text-sm text-gray-600 uppercase">Idee Totali</p>
+    <p className="text-4xl font-black text-blue-600">{schedeFiltrate.length}</p>
+  </div>
+  
+  {/* AGGIUNGI QUESTO LINK */}
+  <a 
+    href="/sondaggio" 
+    className="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold py-3 px-4 rounded-xl text-center shadow-sm transition-all"
+  >
+    Vai al Sondaggio 🗳️
+  </a>
+</aside>
 
       <main className="flex-1 p-8 overflow-y-auto">
         <div className="flex justify-between items-center mb-8">
@@ -172,6 +212,32 @@ export default function Home() {
               <div className="text-xs font-mono bg-gray-100 p-2 rounded border border-gray-200">
                 📚 Manuale: {scheda.manuale}
               </div>
+              <div key={scheda.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group hover:border-blue-300 transition-colors">
+              <button 
+                onClick={() => handleElimina(scheda.id)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+              >
+                🗑️
+              </button>
+              <h3 className="text-2xl font-bold mb-1 pr-8">{scheda.titolo}</h3>
+              <p className="text-sm text-blue-600 font-medium mb-3 italic">Master: {scheda.master}</p>
+              <p className="text-gray-700 mb-6">{scheda.descrizione}</p>
+              <div className="text-xs font-mono bg-gray-100 p-2 rounded border border-gray-200 mb-4">
+                📚 Manuale: {scheda.manuale}
+              </div>
+              
+              {/* NUOVO TASTO SONDAGGIO */}
+              <button
+                onClick={() => toggleSondaggio(scheda.id, scheda.in_sondaggio)}
+                className={`w-full py-2 rounded-lg font-bold transition-all ${
+                  scheda.in_sondaggio 
+                    ? "bg-yellow-400 hover:bg-yellow-500 text-yellow-900 border border-yellow-500 shadow-inner" 
+                    : "bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200"
+                }`}
+              >
+                {scheda.in_sondaggio ? "⭐ Nel Sondaggio" : "➕ Aggiungi al Sondaggio"}
+              </button>
+            </div>
             </div>
           ))}
         </div>
