@@ -130,13 +130,6 @@ export default function Home() {
   return (
     <div className="flex min-h-screen bg-gray-50 font-sans text-gray-900 relative">
       <aside className="w-64 bg-white border-r border-gray-200 p-6 hidden md:flex flex-col">
-        <h2 className="text-xl font-bold mb-4 text-blue-800">Statistiche</h2>
-        <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 text-center">
-          <p className="text-sm text-gray-600 uppercase">Idee Totali</p>
-          <p className="text-4xl font-black text-blue-600">{schede.length}</p>
-        </div>
-      </aside>
-      <aside className="w-64 bg-white border-r border-gray-200 p-6 hidden md:flex flex-col">
   <h2 className="text-xl font-bold mb-4 text-blue-800">Statistiche</h2>
   <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 text-center mb-6">
     <p className="text-sm text-gray-600 uppercase">Idee Totali</p>
@@ -200,18 +193,7 @@ export default function Home() {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {schedeFiltrate.map((scheda) => (
             <div key={scheda.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group">
-              <button 
-                onClick={() => handleElimina(scheda.id)}
-                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
-              >
-                🗑️
-              </button>
-              <h3 className="text-2xl font-bold mb-1 pr-8">{scheda.titolo}</h3>
-              <p className="text-sm text-blue-600 font-medium mb-3 italic">Master: {scheda.master}</p>
-              <p className="text-gray-700 mb-6">{scheda.descrizione}</p>
-              <div className="text-xs font-mono bg-gray-100 p-2 rounded border border-gray-200">
-                📚 Manuale: {scheda.manuale}
-              </div>
+              
               <div key={scheda.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative group hover:border-blue-300 transition-colors">
               <button 
                 onClick={() => handleElimina(scheda.id)}
