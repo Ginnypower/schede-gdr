@@ -35,6 +35,9 @@ export default function Home() {
   const [schedaEspansa, setSchedaEspansa] = useState<SchedaIdea | null>(null);
   const LIMITE_CARATTERI = 700;
 
+  const [fileImmagine, setFileImmagine] = useState<File | null>(null);
+  const [caricando, setCaricando] = useState(false); // Per mostrare un caricamento
+
   useEffect(() => {
     fetchSchede();
   }, []);
@@ -52,33 +55,64 @@ export default function Home() {
     else if (data) setSchede(data);
   }
 
+  async function uploadImmagine(file: File): Promise<string | null> {
+    const supabase = getSupabase();
+    if (!supabase) return null;
   
-    const handleSalva = async (e: React.FormEvent) => {
-      e.preventDefault();
-      // AGGIUNGI QUESTA RIGA:
-      console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL ? "Trovato" : "NON TROVATO");
-      
-      const supabase = getSupabase();
-      // ... resto del codice
-    
-    if (!supabase) {
-      alert("Errore di configurazione: Controlla le chiavi su Vercel!");
-      return;
-    }
-
-    const { data, error } = await supabase
-      .from('schede_idea')
-      .insert([{ titolo, master, descrizione, manuale, immagine }])
-      .select();
-
+    // Creiamo un nome unico per il file (es: 123456789-nomefoto.jpg)
+    const nomeFile = `${Date.now()}-${file.name}`;
+  
+    const { data, error } = await supabase.storage
+      .from('immagini_schede')
+      .upload(nomeFile, file);
+  
     if (error) {
-      alert(`Errore Tecnico: ${error.message} (Codice: ${error.code})`);
-    } else if (data) {
-      setSchede([data[0], ...schede]);
-      setTitolo(''); setMaster(''); setDescrizione(''); setManuale('');
-      setIsFormOpen(false);
+      console.error("Errore upload:", error.message);
+      return null;
     }
-  };
+  
+    // Otteniamo l'URL pubblico del file appena caricato
+    const { data: publicUrl } = supabase.storage
+      .from('immagini_schede')
+      .getPublicUrl(nomeFile);
+  
+    return publicUrl.publicUrl;
+  }
+  
+  async function handleSalva(e: React.FormEvent) {
+    e.preventDefault();
+    setCaricando(true); // Inizia caricamento
+  
+    let urlImmagine = "";
+  
+    // Se l'utente ha selezionato un file, caricalo prima di salvare la scheda
+    if (fileImmagine) {
+      const caricata = await uploadImmagine(fileImmagine);
+      if (caricata) urlImmagine = caricata;
+    }
+  
+    const supabase = getSupabase();
+    if (!supabase) return;
+  
+    const { error } = await supabase.from('schede_idea').insert([{ 
+      titolo, 
+      master, 
+      descrizione, 
+      manuale, 
+      immagine: urlImmagine, // Salviamo l'URL restituito dallo storage
+      voti: 0, 
+      in_sondaggio: false 
+    }]);
+  
+    if (!error) {
+      // Reset e chiusura
+      setFileImmagine(null);
+      setIsFormOpen(false);
+      fetchSchede();
+      // Resetta gli altri stati (titolo, master, etc.)
+    }
+    setCaricando(false);
+  }
 
   const handleElimina = async (id: number) => {
     const supabase = getSupabase();
@@ -311,11 +345,15 @@ export default function Home() {
               <input required placeholder="Master" value={master} onChange={e => setMaster(e.target.value)} className="w-full p-2 border rounded-md" />
               <textarea required placeholder="Descrizione" value={descrizione} onChange={e => setDescrizione(e.target.value)} className="w-full p-2 border rounded-md" rows={3} />
               <input required placeholder="Manuale" value={manuale} onChange={e => setManuale(e.target.value)} className="w-full p-2 border rounded-md" />
-              <input 
-                placeholder="URL Immagine (opzionale)" 
-                value={immagine} 
-                onChange={e => setImmagine(e.target.value)} 
-                className="w-full p-2 border rounded-md" />
+              <div className="flex flex-col gap-1">
+  <label className="text-xs font-bold text-gray-500 uppercase">Immagine Copertina</label>
+  <input 
+    type="file" 
+    accept="image/*" 
+    onChange={e => setFileImmagine(e.target.files ? e.target.files[0] : null)} 
+    className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+  />
+</div>
 
               <div className="flex gap-2 pt-4">
                 <button type="button" onClick={() => setIsFormOpen(false)} className="flex-1 py-2 bg-gray-200 rounded-md font-bold">Annulla</button>
